@@ -45,14 +45,6 @@ Rules specific to test code organization, structure, and quality.
 - **240-259**: Test Naming & Organization
   - Test class naming, namespace organization, method naming patterns
 
-### 3xx - Reserved for Future Categories (300-399)
-
-Reserved ranges for potential future rule categories.
-
-- **300-319**: Performance Rules (future expansion)
-- **320-339**: Security Rules (future expansion)
-- **340-359**: Maintainability Rules (future expansion)
-
 ### 9xx - Meta/Configuration Rules (900-999)
 
 Rules about analyzer configuration and rule management.
@@ -61,35 +53,29 @@ Rules about analyzer configuration and rule management.
 - **920-939**: Suppression Rules
 - **940-959**: Severity Configuration
 
-## Analyzer Ideas
+## Roadmap
 
-### Project settings
+### Internal improvements
+
+- Set up nuget package publish
+- Document motivation for the project in this readme
+- Ensure each analyzer explains why it's useful
+- Create enum for analyzer categories
+- Use published analyzers in this codebase
+- Figure out consistent analyzer naming (e.g. SomethingRequiredAnalyzer or SomethingForbiddenAnalyzer) (Require/Enforce vs Forbid/Prohibit)
+
+### New analyzers
 
 - Warnings as errors must be enabled
 - nullable context must be enabled
 - Require microsoft threading analyzers
-- No inline comments - only allow TODOs, XML docs, and Arrange/Act/Assert comments in tests
-- Public types MUST have XML docs (methods are optional, but allowed)
 - No pramga warning disable
 - dumb comment analyzer (detect if the comment is mostly just the property name)
-- No weasel words (Service, Manager, Helper, Utils, etc.)
-
-### Style enforcement
-
-- Must use using var instead of using blocks at end of method
-- Require Guard clauses instead of manual parameter validation
 - Single-line members must be expression bodies
 
-### Testing
+#### Testing
 
 - Only allow Xunit tests
-- Tests must have a category trait
-- Only allow FluentAssertions, no XUnit assertions
 - Forbid multiple assertions per test
-- Do not allow task.delay in tests
-- Tests must have TestOf attribute to indicate the class under test
-- Test classes must end with "Tests"
-- Test class namespaces must mirror the source code namespace, with a ".Tests" suffix on the source project name, and a "Tests" suffix on the test class name. e.g. source class MySolution.MyProject.MyClass -> test namespace MySolution.MyProject.Tests.MyClassTests
 - Test classes must only test a single method
-- Test methods must follow the pattern ScenarioUnderTest_ExpectedBehavior
-- Test methods must have Arrange/Act/Assert comments
+- Test methods must follow the pattern ScenarioUnderTest_ExpectedBehavior (currently 3 segments)
