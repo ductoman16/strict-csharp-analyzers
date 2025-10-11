@@ -1,0 +1,122 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "📦 dotnet build",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"build",
+				"${workspaceFolder}/StrictCSharp.Analyzers.slnx",
+				"/warnaserror"
+			],
+			"problemMatcher": "$msCompile",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "👀 🧪 dotnet watch test",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"watch",
+				"test",
+				"--project",
+				"${workspaceFolder}/StrictCSharp.Analyzers.slnx",
+				"--",
+				"--project",
+				"${workspaceFolder}/StrictCSharp.Analyzers.slnx",
+				"--maxcpucount:1"
+			],
+			"problemMatcher": "$msCompile",
+			"group": "test"
+		},
+		{
+			"label": "🧪 dotnet test",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"test",
+				"${workspaceFolder}/StrictCSharp.Analyzers.slnx",
+				"--blame-hang-timeout",
+				"30s",
+				"--maxcpucount:1"
+			],
+			"problemMatcher": "$msCompile",
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "🌐 dotnet test (Integration Only)",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"test",
+				"${workspaceFolder}/StrictCSharp.Analyzers.slnx",
+				"--filter",
+				"Category=Integration",
+				"--blame-hang-timeout",
+				"30s"
+			],
+			"problemMatcher": "$msCompile",
+			"group": "test"
+		},
+		{
+			"label": "🧬 dotnet test (Unit Tests Only)",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"test",
+				"${workspaceFolder}/StrictCSharp.Analyzers.slnx",
+				"--filter",
+				"Category!=Integration",
+				"--blame-hang-timeout",
+				"30s"
+			],
+			"problemMatcher": "$msCompile",
+			"group": "test"
+		},
+		{
+			"label": "🎯 dotnet test (Current File)",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"test",
+				"${workspaceFolder}/StrictCSharp.Analyzers.slnx",
+				"--filter",
+				"FullyQualifiedName~${fileBasenameNoExtension}",
+				"--blame-hang-timeout",
+				"30s",
+				"--maxcpucount:1"
+			],
+			"problemMatcher": "$msCompile",
+			"group": "test"
+		},
+		{
+			"label": "🫧 dotnet clean",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"clean",
+				"${workspaceFolder}/StrictCSharp.Analyzers.slnx"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "💅 dotnet format",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"format",
+				"${workspaceFolder}/StrictCSharp.Analyzers.slnx"
+			],
+			"problemMatcher": "$msCompile",
+			"group": "none"
+		},
+	]
+}
