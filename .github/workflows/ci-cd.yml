@@ -77,10 +77,7 @@ jobs:
     - name: Publish to NuGet
       run: |
         for package in ./artifacts/*.nupkg; do
-          dotnet nuget push "$package" \
-            --api-key ${{ secrets.NUGET_API_KEY }} \
-            --source https://api.nuget.org/v3/index.json \
-            --skip-duplicate
+          dotnet nuget push "$package" --source https://api.nuget.org/v3/index.json --api-key "${{ secrets.NUGET_API_KEY }}" --skip-duplicate
         done
 
 
