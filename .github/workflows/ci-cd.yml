@@ -1,0 +1,84 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  SOLUTION_FILE: 'StrictCSharp.Analyzers.slnx'
+  ANALYZER_PROJECT: 'StrictCSharp.Analyzers/StrictCSharp.Analyzers.csproj'
+  TEST_PROJECT: 'StrictCSharp.Analyzers.Tests/StrictCSharp.Analyzers.Tests.csproj'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch full history for GitVersion
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_FILE }}
+    
+    - name: Build solution
+      run: dotnet build ${{ env.SOLUTION_FILE }} --no-restore --configuration Release
+    
+    - name: Run tests
+      run: dotnet test ${{ env.TEST_PROJECT }} --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage"
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: '**/TestResults/**/*'
+    
+    - name: Pack NuGet package
+      run: dotnet pack ${{ env.ANALYZER_PROJECT }} --no-build --configuration Release --output ./artifacts
+    
+    - name: Upload package artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-packages
+        path: ./artifacts/*.nupkg
+
+  publish-nuget:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: Download package artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: nuget-packages
+        path: ./artifacts
+    
+    - name: Publish to NuGet
+      run: |
+        for package in ./artifacts/*.nupkg; do
+          echo "Publishing $package"
+          dotnet nuget push "$package" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        done
+
+

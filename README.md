@@ -63,6 +63,7 @@ Rules about analyzer configuration and rule management.
 - Create enum for analyzer categories
 - Use published analyzers in this codebase
 - Figure out consistent analyzer naming (e.g. SomethingRequiredAnalyzer or SomethingForbiddenAnalyzer) (Require/Enforce vs Forbid/Prohibit)
+- Directory.build.props for consistent project settings
 
 ### New analyzers
 

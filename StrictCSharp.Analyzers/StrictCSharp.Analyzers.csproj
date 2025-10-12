@@ -9,10 +9,24 @@
     <NoWarn>$(NoWarn);NU5128</NoWarn>
     <EnableAnalyzerReleaseTracking>true</EnableAnalyzerReleaseTracking>
     <AnalyzerRoslynVersion>4.8.0</AnalyzerRoslynVersion>
-    <Version>1.0.0</Version>
-    <Description>Strict C# Analyzers for enforcing coding standards and best practices.</Description>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Nullable>enable</Nullable>
+
+    <!-- Package Information -->
+    <PackageId>StrictCSharp.Analyzers</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Ryan Lennox</Authors>
+    <Company>Ryan Lennox</Company>
+    <Product>StrictCSharp.Analyzers</Product>
+    <Description>An opinionated set of Roslyn Analyzers for C# projects that enforce strict coding standards and best practices.</Description>
+    <PackageTags>roslyn;analyzer;csharp;code-quality;static-analysis;coding-standards</PackageTags>
+    <PackageProjectUrl>https://github.com/ductoman16/strict-csharp-analyzers</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ductoman16/strict-csharp-analyzers.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Copyright>Copyright (c) 2025 Ryan Lennox</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,6 +42,7 @@
 
   <ItemGroup>
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
