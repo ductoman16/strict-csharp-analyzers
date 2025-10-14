@@ -1,4 +1,16 @@
-## Release 1.0.0
+## Release 0.1.0
+
+### New Rules
+
+Rule ID | Category | Severity | Notes
+--------|----------|----------|-------
+SC201 | Testing | Error | Changed from Warning to Error - Use FluentAssertions instead of xUnit Assert methods
+SC221 | Testing | Error | Changed from Warning to Error - Test methods must have Arrange/Act/Assert comments
+SC222 | Testing | Error | Changed from Warning to Error - Multiple assertions require AssertionScope
+SC241 | Testing | Error | Changed from Warning to Error - Test classes must end with "Tests" suffix
+SC243 | Testing | Error | Changed from Warning to Error - Test classes must have TestOf attribute
+
+## Release 0.0.1
 
 ### New Rules
 
@@ -9,7 +21,7 @@ SC041 | Naming | Error | WeaselWordNameAnalyzer - prohibits type names ending wi
 
 SC101 | Style | Error | UsingBlockAtEndAnalyzer - prohibits using blocks as the last statement in a method; require using statement expressions instead
 SC121 | Style | Error | GuardClauseAnalyzer - prohibits manual parameter validation instead of Ardalis.GuardClauses
-SC141 | Style | Error | NoInlineCommentsAnalyzer - prohibits inline comments (// or /* */)
+SC141 | Style | Error | NoInlineCommentsAnalyzer - prohibits inline comments (// or /**/)
 
 SC201 | Testing | Warning | NoXUnitAssertionsAnalyzer - prohibits xUnit Assert methods instead of FluentAssertions
 SC204 | Testing | Error | NoTaskDelayAnalyzer - prohibits await Task.Delay() in unit tests

@@ -25,7 +25,7 @@ public class FluentAssertionScopeAnalyzer : DiagnosticAnalyzer
         _title,
         _messageFormat,
         _category,
-        DiagnosticSeverity.Warning,
+        DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: _description);
 
