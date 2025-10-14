@@ -22,7 +22,7 @@ public class TestOfRequiredAnalyzerTests
         analyzer.Should().NotBeNull();
         analyzer.SupportedDiagnostics.Should().HaveCount(1);
         analyzer.SupportedDiagnostics[0].Id.Should().Be("SC243");
-        analyzer.SupportedDiagnostics[0].DefaultSeverity.Should().Be(Microsoft.CodeAnalysis.DiagnosticSeverity.Warning);
+        analyzer.SupportedDiagnostics[0].DefaultSeverity.Should().Be(Microsoft.CodeAnalysis.DiagnosticSeverity.Error);
     }
 
     /// <summary>

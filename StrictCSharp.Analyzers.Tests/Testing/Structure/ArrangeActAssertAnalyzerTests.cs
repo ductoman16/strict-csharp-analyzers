@@ -26,7 +26,7 @@ public class ArrangeActAssertAnalyzerTests
         analyzer.Should().NotBeNull();
         analyzer.SupportedDiagnostics.Should().HaveCount(1);
         analyzer.SupportedDiagnostics[0].Id.Should().Be("SC221");
-        analyzer.SupportedDiagnostics[0].DefaultSeverity.Should().Be(DiagnosticSeverity.Warning);
+        analyzer.SupportedDiagnostics[0].DefaultSeverity.Should().Be(DiagnosticSeverity.Error);
     }
 
     /// <summary>

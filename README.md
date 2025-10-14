@@ -241,6 +241,7 @@ Rules about analyzer configuration and rule management.
 - Figure out consistent analyzer naming (e.g. SomethingRequiredAnalyzer or SomethingForbiddenAnalyzer) (Require/Enforce vs Forbid/Prohibit)
 - Directory.build.props for consistent project settings
 - TestCategory enum/constants
+- Remove region support from AAA analyzer
 
 ### New analyzers
 
