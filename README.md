@@ -238,10 +238,15 @@ Rules about analyzer configuration and rule management.
 - Ensure each analyzer explains Motivation
 - Create enum for analyzer categories
 - Use published analyzers in this codebase
+- Convert to centralized package management
+
+### Analyzer improvements
+
 - Figure out consistent analyzer naming (e.g. SomethingRequiredAnalyzer or SomethingForbiddenAnalyzer) (Require/Enforce vs Forbid/Prohibit)
 - Directory.build.props for consistent project settings
 - TestCategory enum/constants
 - Remove region support from AAA analyzer
+- Update TestOf to also specify the method under test
 
 ### New analyzers
 
@@ -251,6 +256,9 @@ Rules about analyzer configuration and rule management.
 - No pramga warning disable
 - dumb comment analyzer (detect if the comment is mostly just the property name)
 - Single-line members must be expression bodies
+- Class name must match file name
+- Don't allow empty param/return tags in XML comments
+- Limit C# file length to like 300 lines?
 
 #### Testing
 

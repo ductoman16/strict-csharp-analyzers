@@ -118,5 +118,19 @@
 			"problemMatcher": "$msCompile",
 			"group": "none"
 		},
+		{
+			"label": "📊 Test Coverage",
+			"type": "shell",
+			"command": "dotnet test ${workspaceFolder}/StrictCSharp.Analyzers.slnx --collect:\"XPlat Code Coverage\" --results-directory ${workspaceFolder}/TestResults && ~/.dotnet/tools/reportgenerator \"-reports:${workspaceFolder}/TestResults/**/coverage.cobertura.xml\" -targetdir:${workspaceFolder}/TestResults/CoverageReport -reporttypes:Html && open ${workspaceFolder}/TestResults/CoverageReport/index.html",
+			"problemMatcher": "$msCompile",
+			"group": "test"
+		},
+		{
+			"label": "👾 Stryker Mutation Testing",
+			"type": "shell",
+			"command": "cd ${workspaceFolder}/StrictCSharp.Analyzers.Tests && dotnet stryker && open StrykerOutput/*/reports/mutation-report.html",
+			"problemMatcher": [],
+			"group": "test"
+		}
 	]
 }
