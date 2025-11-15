@@ -16,7 +16,7 @@ public class UsingBlockAtEndAnalyzer : DiagnosticAnalyzer
     private const string Title = "Use using statement expression instead of using block at end of method";
     private const string MessageFormat = "Use a using statement expression instead of a using block as the last statement in a method";
     private const string Description = "Prefer using statement expressions (using var x = ...) over using blocks (using (var x = ...) { ... }) when the using is the last statement in a method.";
-    private const string Category = "Style";
+    private const string Category = nameof(AnalyzerCategory.Style);
 
     private static readonly DiagnosticDescriptor Rule = new(
         DiagnosticId,

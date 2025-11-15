@@ -14,7 +14,7 @@ public class TestClassMustEndWithTestsAnalyzer : DiagnosticAnalyzer
     private const string _title = "Test class must end with 'Tests'";
     private const string _messageFormat = "Test class '{0}' {1}";
     private const string _description = "Test classes should follow naming conventions (ending with 'Tests').";
-    private const string _category = "Testing";
+    private const string _category = nameof(AnalyzerCategory.Testing);
 
     private static readonly DiagnosticDescriptor _rule = new(
         DiagnosticId,

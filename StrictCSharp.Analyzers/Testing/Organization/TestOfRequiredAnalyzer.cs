@@ -14,7 +14,7 @@ public class TestOfRequiredAnalyzer : DiagnosticAnalyzer
     private const string Title = "Test class must have TestOf attribute";
     private const string MessageFormat = "Test class '{0}' must have a [TestOf(typeof(ClassUnderTest))] attribute";
     private const string Description = "All test classes (classes containing XUnit Facts or Theories) must have a TestOf attribute to indicate which class they are testing.";
-    private const string Category = "Testing";
+    private const string Category = nameof(AnalyzerCategory.Testing);
 
     private static readonly DiagnosticDescriptor Rule = new(
         DiagnosticId,

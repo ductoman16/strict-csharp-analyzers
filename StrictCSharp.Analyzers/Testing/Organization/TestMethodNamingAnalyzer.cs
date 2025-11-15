@@ -15,7 +15,7 @@ public class TestMethodNamingAnalyzer : DiagnosticAnalyzer
     private const string Title = "Test method name must follow 3-segment structure";
     private const string MessageFormat = "Test method '{0}' must follow the naming pattern 'MethodName_Scenario_ExpectedResult' with exactly 3 segments separated by underscores";
     private const string Description = "Test method names should have exactly 3 segments separated by underscores: MethodName_Scenario_ExpectedResult. This ensures consistent and readable test naming across the codebase.";
-    private const string Category = "Testing";
+    private const string Category = nameof(AnalyzerCategory.Testing);
 
     private static readonly DiagnosticDescriptor Rule = new(
         DiagnosticId,

@@ -13,7 +13,7 @@ public class WeaselWordNameAnalyzer : DiagnosticAnalyzer
     private static readonly LocalizableString _title = "Type name contains a weasel word";
     private static readonly LocalizableString _messageFormat = "Type name '{0}' ends with a weasel word ('{1}'). Use a more descriptive name.";
     private static readonly LocalizableString _description = "Type names should not end with generic words like 'Service', 'Manager', 'Helper', or 'Util'.";
-    private const string _category = "Naming";
+    private const string _category = nameof(AnalyzerCategory.Naming);
 
     private static readonly DiagnosticDescriptor _rule = new(
         DiagnosticId,

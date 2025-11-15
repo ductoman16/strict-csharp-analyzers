@@ -13,7 +13,7 @@ public class GuardClauseAnalyzer : DiagnosticAnalyzer
     private const string _title = "Use Ardalis.GuardClauses for parameter validation";
     private const string _messageFormat = "Use Guard.Against.{0} instead of manual validation";
     private const string _description = "Use Ardalis.GuardClauses for parameter validation at the start of methods to improve code readability and maintainability.";
-    private const string _category = "Style";
+    private const string _category = nameof(AnalyzerCategory.Style);
 
     private static readonly DiagnosticDescriptor _rule = new(
         DiagnosticId,

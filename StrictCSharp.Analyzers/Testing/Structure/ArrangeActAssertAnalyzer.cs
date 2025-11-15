@@ -15,7 +15,7 @@ public class ArrangeActAssertAnalyzer : DiagnosticAnalyzer
     private const string Title = "Test method must follow Arrange/Act/Assert pattern";
     private const string MessageFormat = "Test method '{0}' {1}";
     private const string Description = "Test methods should have clear Arrange, Act, and Assert sections separated by comments. Each section should be preceded by a '// Arrange', '// Act', or '// Assert' comment.";
-    private const string Category = "Testing";
+    private const string Category = nameof(AnalyzerCategory.Testing);
 
     private static readonly DiagnosticDescriptor Rule = new(
         DiagnosticId,

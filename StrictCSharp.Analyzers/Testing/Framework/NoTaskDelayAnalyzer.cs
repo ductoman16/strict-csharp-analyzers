@@ -14,7 +14,7 @@ public class NoTaskDelayAnalyzer : DiagnosticAnalyzer
     private const string Title = "Do not use await Task.Delay() in unit tests";
     private const string MessageFormat = "Unit test method '{0}' should not use await Task.Delay(). Use deterministic timing patterns instead.";
     private const string Description = "Unit tests should not use await Task.Delay() as it introduces non-deterministic timing and slows down tests. Use test doubles or deterministic timing patterns instead.";
-    private const string Category = "Testing";
+    private const string Category = nameof(AnalyzerCategory.Testing);
 
     private static readonly DiagnosticDescriptor Rule = new(
         DiagnosticId,

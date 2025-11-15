@@ -14,7 +14,7 @@ public class TestClassNamespaceAnalyzer : DiagnosticAnalyzer
     private const string _title = "Test class with TestOf attribute must follow correct namespace structure";
     private const string _messageFormat = "Test class '{0}' should be in namespace '{1}' but is in '{2}'";
     private const string _description = "Test classes with TestOf attribute must follow the namespace structure: [ClassUnderTestProjectName].Tests.[ClassUnderTestNamespace].[ClassUnderTest]Tests.";
-    private const string _category = "Testing";
+    private const string _category = nameof(AnalyzerCategory.Testing);
 
     private static readonly DiagnosticDescriptor _rule = new(
         DiagnosticId,

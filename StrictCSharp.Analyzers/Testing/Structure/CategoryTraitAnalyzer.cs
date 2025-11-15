@@ -14,7 +14,7 @@ public class CategoryTraitAnalyzer : DiagnosticAnalyzer
     private const string _title = "Test class must have a Category Trait";
     private const string _messageFormat = "Test class '{0}' must have a [Trait(\"Category\", ...)] attribute";
     private const string _description = "Each test class must be decorated with a [Trait(\"Category\", ...)] attribute for test categorization.";
-    private const string _category = "Testing";
+    private const string _category = nameof(AnalyzerCategory.Testing);
 
     private static readonly DiagnosticDescriptor _rule = new(
         DiagnosticId,

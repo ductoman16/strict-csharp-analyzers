@@ -14,7 +14,7 @@ public class TypeDocumentationAnalyzer : DiagnosticAnalyzer
     private static readonly LocalizableString Title = "Public type must have XML documentation";
     private static readonly LocalizableString MessageFormat = "Public type '{0}' must have XML documentation";
     private static readonly LocalizableString Description = "All public types must have XML documentation.";
-    private const string Category = "Documentation";
+    private const string Category = nameof(AnalyzerCategory.Documentation);
 
     private static readonly DiagnosticDescriptor Rule = new(
         DiagnosticId,

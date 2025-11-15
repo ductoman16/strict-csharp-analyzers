@@ -18,7 +18,7 @@ public class FluentAssertionScopeAnalyzer : DiagnosticAnalyzer
     private const string _title = "Test method with multiple assertions should use AssertionScope";
     private const string _messageFormat = "Test method '{0}' {1}";
     private const string _description = "Test methods with multiple assertions should use AssertionScope to get better error messages that show all failures.";
-    private const string _category = "Testing";
+    private const string _category = nameof(AnalyzerCategory.Testing);
 
     private static readonly DiagnosticDescriptor _rule = new(
         DiagnosticId,

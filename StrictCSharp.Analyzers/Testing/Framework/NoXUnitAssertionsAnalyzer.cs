@@ -18,7 +18,7 @@ public class NoXUnitAssertionsAnalyzer : DiagnosticAnalyzer
     private const string _title = "Use FluentAssertions instead of xUnit assertions";
     private const string _messageFormat = "Test method '{0}' {1}";
     private const string _description = "Test methods should use FluentAssertions syntax instead of xUnit Assert methods for more readable and detailed assertions.";
-    private const string _category = "Testing";
+    private const string _category = nameof(AnalyzerCategory.Testing);
 
     private static readonly DiagnosticDescriptor _rule = new(
         DiagnosticId,

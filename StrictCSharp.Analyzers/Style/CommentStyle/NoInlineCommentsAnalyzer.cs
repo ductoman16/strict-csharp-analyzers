@@ -14,7 +14,7 @@ public class NoInlineCommentsAnalyzer : DiagnosticAnalyzer
     private const string _title = "Inline comments are not allowed; code should be self-explanatory or use XML documentation comments";
     private const string _messageFormat = "Inline comments are not allowed. Code should be self-explanatory (e.g., extract a method with a descriptive name). If that's not possible, use XML documentation comments (///).";
     private const string _description = "Inline comments (// or /* ... */) are not allowed. Code should be self-explanatory, for example by extracting a method with a descriptive name. If that's not possible, use XML documentation comments (///) for documentation.";
-    private const string _category = "Style";
+    private const string _category = nameof(AnalyzerCategory.Style);
 
     private static readonly DiagnosticDescriptor _rule = new(
         DiagnosticId,
