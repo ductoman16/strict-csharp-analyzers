@@ -15,7 +15,7 @@ public class TestOfRequiredAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Test class must have TestOf attribute",
         "Test class '{0}' must have a [TestOf(typeof(ClassUnderTest))] attribute",
-        "Testing",
+        nameof(AnalyzerCategory.Testing),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "All test classes (classes containing XUnit Facts or Theories) must have a TestOf attribute to indicate which class they are testing.");

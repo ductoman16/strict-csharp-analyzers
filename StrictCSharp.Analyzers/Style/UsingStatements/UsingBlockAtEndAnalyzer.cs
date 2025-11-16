@@ -17,7 +17,7 @@ public class UsingBlockAtEndAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Use using statement expression instead of using block at end of method",
         "Use a using statement expression instead of a using block as the last statement in a method",
-        "Style",
+        nameof(AnalyzerCategory.Style),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Prefer using statement expressions (using var x = ...) over using blocks (using (var x = ...) { ... }) when the using is the last statement in a method.");

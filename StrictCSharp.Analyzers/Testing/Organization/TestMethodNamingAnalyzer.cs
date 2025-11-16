@@ -16,7 +16,7 @@ public class TestMethodNamingAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Test method name must follow 3-segment structure",
         "Test method '{0}' must follow the naming pattern 'MethodName_Scenario_ExpectedResult' with exactly 3 segments separated by underscores",
-        "Testing",
+        nameof(AnalyzerCategory.Testing),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Test method names should have exactly 3 segments separated by underscores: MethodName_Scenario_ExpectedResult. This ensures consistent and readable test naming across the codebase.");

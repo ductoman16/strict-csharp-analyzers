@@ -16,7 +16,7 @@ public class ArrangeActAssertAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Test method must follow Arrange/Act/Assert pattern",
         "Test method '{0}' {1}",
-        "Testing",
+        nameof(AnalyzerCategory.Testing),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Test methods should have clear Arrange, Act, and Assert sections separated by comments. Each section should be preceded by a '// Arrange', '// Act', or '// Assert' comment.");

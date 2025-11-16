@@ -15,7 +15,7 @@ public class TestClassNamespaceAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Test class with TestOf attribute must follow correct namespace structure",
         "Test class '{0}' should be in namespace '{1}' but is in '{2}'",
-        "Testing",
+        nameof(AnalyzerCategory.Testing),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Test classes with TestOf attribute must follow the namespace structure: [ClassUnderTestProjectName].Tests.[ClassUnderTestNamespace].[ClassUnderTest]Tests.");

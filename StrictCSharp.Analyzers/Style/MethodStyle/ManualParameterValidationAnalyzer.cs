@@ -17,7 +17,7 @@ public class ManualParameterValidationAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Use Ardalis.GuardClauses for parameter validation",
         "Use Guard.Against.{0} instead of manual validation",
-        "Style",
+        nameof(AnalyzerCategory.Style),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Use Ardalis.GuardClauses for parameter validation at the start of methods to improve code readability and maintainability.");

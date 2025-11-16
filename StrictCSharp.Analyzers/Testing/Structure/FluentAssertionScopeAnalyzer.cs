@@ -19,7 +19,7 @@ public class FluentAssertionScopeAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Test method with multiple assertions should use AssertionScope",
         "Test method '{0}' {1}",
-        "Testing",
+        nameof(AnalyzerCategory.Testing),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Test methods with multiple assertions should use AssertionScope to get better error messages that show all failures.");

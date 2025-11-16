@@ -15,7 +15,7 @@ public class CategoryTraitAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Test class must have a Category Trait",
         "Test class '{0}' must have a [Trait(\"Category\", ...)] attribute",
-        "Testing",
+        nameof(AnalyzerCategory.Testing),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Each test class must be decorated with a [Trait(\"Category\", ...)] attribute for test categorization.");

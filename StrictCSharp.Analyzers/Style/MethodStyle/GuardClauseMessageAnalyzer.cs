@@ -17,7 +17,7 @@ public class GuardClauseMessageAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Guard.Against calls should use descriptive messages instead of nameof",
         "Guard.Against.{0} should use a descriptive message instead of nameof",
-        "Style",
+        nameof(AnalyzerCategory.Style),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Guard.Against calls from Ardalis.GuardClauses should use descriptive error messages instead of nameof for better error reporting.");

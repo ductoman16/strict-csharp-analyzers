@@ -15,7 +15,7 @@ public class NoInlineCommentsAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Inline comments are not allowed; code should be self-explanatory or use XML documentation comments",
         "Inline comments are not allowed. Code should be self-explanatory (e.g., extract a method with a descriptive name). If that's not possible, use XML documentation comments (///).",
-        "Style",
+        nameof(AnalyzerCategory.Style),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Inline comments (// or /* ... */) are not allowed. Code should be self-explanatory, for example by extracting a method with a descriptive name. If that's not possible, use XML documentation comments (///) for documentation.");

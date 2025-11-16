@@ -14,7 +14,7 @@ public class TypeDocumentationAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Public type must have XML documentation",
         "Public type '{0}' must have XML documentation",
-        "Documentation",
+        nameof(AnalyzerCategory.Documentation),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "All public types must have XML documentation.");

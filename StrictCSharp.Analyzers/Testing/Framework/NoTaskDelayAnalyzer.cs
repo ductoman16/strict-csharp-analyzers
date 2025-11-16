@@ -15,7 +15,7 @@ public class NoTaskDelayAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Do not use await Task.Delay() in unit tests",
         "Unit test method '{0}' should not use await Task.Delay(). Use deterministic timing patterns instead.",
-        "Testing",
+        nameof(AnalyzerCategory.Testing),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Unit tests should not use await Task.Delay() as it introduces non-deterministic timing and slows down tests. Use test doubles or deterministic timing patterns instead.");

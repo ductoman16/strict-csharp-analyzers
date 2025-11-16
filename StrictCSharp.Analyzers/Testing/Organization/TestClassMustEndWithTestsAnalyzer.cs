@@ -16,7 +16,7 @@ public class TestClassMustEndWithTestsAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Test class must end with 'Tests'",
         "Test class '{0}' {1}",
-        "Testing",
+        nameof(AnalyzerCategory.Testing),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Test classes should follow naming conventions (ending with 'Tests').");

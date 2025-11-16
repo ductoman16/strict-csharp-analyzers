@@ -19,7 +19,7 @@ public class NoXUnitAssertionsAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Use FluentAssertions instead of xUnit assertions",
         "Test method '{0}' {1}",
-        "Testing",
+        nameof(AnalyzerCategory.Testing),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Test methods should use FluentAssertions syntax instead of xUnit Assert methods for more readable and detailed assertions.");

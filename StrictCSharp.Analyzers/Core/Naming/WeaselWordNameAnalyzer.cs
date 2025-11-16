@@ -14,7 +14,7 @@ public class WeaselWordNameAnalyzer : BaseAnalyzer
         DiagnosticId,
         "Type name contains a weasel word",
         "Type name '{0}' ends with a weasel word ('{1}'). Use a more descriptive name.",
-        "Naming",
+        nameof(AnalyzerCategory.Naming),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Type names should not end with generic words like 'Service', 'Manager', 'Helper', or 'Util'.");
