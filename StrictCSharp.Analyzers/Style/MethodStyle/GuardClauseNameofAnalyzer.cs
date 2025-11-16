@@ -6,21 +6,22 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace StrictCSharp.Analyzers.Style.MethodStyle;
 
 /// <summary>
-/// Analyzer that detects Guard.Against calls that use nameof instead of descriptive messages.
+/// Analyzer that detects Guard.Against calls that use nameof for the second parameter.
+/// The guard clause library uses CallerArgumentExpression on the second parameter to automatically get the expression name.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class GuardClauseMessageAnalyzer : BaseAnalyzer
+public class GuardClauseNameofAnalyzer : BaseAnalyzer
 {
     public const string DiagnosticId = "SC122";
 
     private static readonly DiagnosticDescriptor RuleDescriptor = new(
         DiagnosticId,
-        "Guard.Against calls should use descriptive messages instead of nameof",
-        "Guard.Against.{0} should use a descriptive message instead of nameof",
+        "Guard.Against calls should not use nameof for the second parameter",
+        "Guard.Against.{0} should not use nameof for the second parameter; the library uses CallerArgumentExpression to automatically capture the expression name",
         nameof(AnalyzerCategory.Style),
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Guard.Against calls from Ardalis.GuardClauses should use descriptive error messages instead of nameof for better error reporting.");
+        description: "Guard.Against calls from Ardalis.GuardClauses use CallerArgumentExpression on the second parameter to automatically capture the expression name. Using nameof is redundant and unnecessary.");
 
     protected override DiagnosticDescriptor Rule => RuleDescriptor;
 

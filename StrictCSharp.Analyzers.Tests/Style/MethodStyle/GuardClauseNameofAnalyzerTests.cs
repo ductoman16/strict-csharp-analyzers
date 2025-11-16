@@ -8,10 +8,10 @@ using StrictCSharp.Analyzers.Style.MethodStyle;
 namespace StrictCSharp.Analyzers.Tests.Style.MethodStyle;
 
 /// <summary>
-/// Tests for the <see cref="GuardClauseMessageAnalyzer"/> to ensure it correctly identifies
-/// Guard.Against calls that use nameof instead of descriptive messages.
+/// Tests for the <see cref="GuardClauseNameofAnalyzer"/> to ensure it correctly identifies
+/// Guard.Against calls that use nameof for the second parameter.
 /// </summary>
-public class GuardClauseMessageAnalyzerTests
+public class GuardClauseNameofAnalyzerTests
 {
     /// <summary>
     /// Verifies that the analyzer can be instantiated and has the correct diagnostic configuration.
@@ -20,7 +20,7 @@ public class GuardClauseMessageAnalyzerTests
     public void Analyzer_WhenCalled_ShouldCanBeInstantiated()
     {
         // Arrange & Act
-        var analyzer = new GuardClauseMessageAnalyzer();
+        var analyzer = new GuardClauseNameofAnalyzer();
 
         // Assert
         analyzer.Should().NotBeNull();
@@ -36,18 +36,18 @@ public class GuardClauseMessageAnalyzerTests
     public void Analyzer_WhenCalled_ShouldHasCorrectDiagnosticProperties()
     {
         // Arrange
-        var analyzer = new GuardClauseMessageAnalyzer();
+        var analyzer = new GuardClauseNameofAnalyzer();
         var diagnostic = analyzer.SupportedDiagnostics[0];
 
         // Assert
-        diagnostic.Title.ToString().Should().Be("Guard.Against calls should use descriptive messages instead of nameof");
-        diagnostic.MessageFormat.ToString().Should().Be("Guard.Against.{0} should use a descriptive message instead of nameof");
+        diagnostic.Title.ToString().Should().Be("Guard.Against calls should not use nameof for the second parameter");
+        diagnostic.MessageFormat.ToString().Should().Be("Guard.Against.{0} should not use nameof for the second parameter; the library uses CallerArgumentExpression to automatically capture the expression name");
         diagnostic.Category.Should().Be("Style");
         diagnostic.IsEnabledByDefault.Should().BeTrue();
     }
 
     /// <summary>
-    /// Verifies that Guard.Against call with nameof triggers a diagnostic for descriptive message.
+    /// Verifies that Guard.Against call with nameof triggers a diagnostic.
     /// </summary>
     [Fact]
     public void GuardAgainstCallWithNameof_WhenCalled_ShouldReportDiagnostic()
@@ -65,8 +65,8 @@ public class TestClass
 
         var diagnostics = GetDiagnostics(test);
         diagnostics.Should().HaveCount(1);
-        diagnostics[0].Id.Should().Be(GuardClauseMessageAnalyzer.DiagnosticId);
-        diagnostics[0].GetMessage().Should().Contain("descriptive message");
+        diagnostics[0].Id.Should().Be(GuardClauseNameofAnalyzer.DiagnosticId);
+        diagnostics[0].GetMessage().Should().Contain("CallerArgumentExpression");
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public class TestClass
     }
 
     /// <summary>
-    /// Verifies that Guard.Against calls without nameof do not trigger the descriptive message diagnostic.
+    /// Verifies that Guard.Against calls without nameof do not trigger a diagnostic.
     /// </summary>
     [Fact]
     public void GuardAgainstCallsWithoutNameof_WhenCalled_ShouldNotReportDiagnostic()
@@ -112,7 +112,7 @@ public class TestClass
     }
 
     /// <summary>
-    /// Helper method to get diagnostics from source code using the GuardClauseMessageAnalyzer.
+    /// Helper method to get diagnostics from source code using the GuardClauseNameofAnalyzer.
     /// </summary>
     private static Diagnostic[] GetDiagnostics(string source)
     {
@@ -121,7 +121,7 @@ public class TestClass
             .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
             .AddSyntaxTrees(syntaxTree);
 
-        var analyzer = new GuardClauseMessageAnalyzer();
+        var analyzer = new GuardClauseNameofAnalyzer();
         var diagnostics = compilation.WithAnalyzers(ImmutableArray.Create<DiagnosticAnalyzer>(analyzer))
             .GetAnalyzerDiagnosticsAsync()
             .Result;

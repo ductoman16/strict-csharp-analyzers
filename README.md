@@ -54,11 +54,17 @@ While excessive documentation can be hard to maintain, requiring XML documentati
 
 **Motivation:** Using statement expressions (`using var x = ...`) are more concise and reduce nesting compared to using blocks (`using (var x = ...) { ... }`). When the using is the last statement, the block adds unnecessary indentation without providing value.
 
-#### SC121 - GuardClauseAnalyzer
+#### SC121 - ManualParameterValidationAnalyzer
 
 **Definition:** Requires using Ardalis.GuardClauses for parameter validation instead of manual if-throw patterns.
 
 **Motivation:** Guard clauses provide a concise and consistent way to validate parameters. The Ardalis.GuardClauses library is the most well fleshed-out and widely used guard clause library in the .NET ecosystem.
+
+#### SC122 - GuardClauseNameofAnalyzer
+
+**Definition:** Prohibits using nameof for the second parameter in Guard.Against calls.
+
+**Motivation:** The Ardalis.GuardClauses library uses CallerArgumentExpression on the second parameter to automatically capture the expression name. Using nameof is redundant and unnecessary.
 
 #### SC141 - NoInlineCommentsAnalyzer
 
