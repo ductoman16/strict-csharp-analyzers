@@ -2,39 +2,29 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace StrictCSharp.Analyzers.Testing.Framework;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class NoTaskDelayAnalyzer : DiagnosticAnalyzer
+public class NoTaskDelayAnalyzer : BaseAnalyzer
 {
     public const string DiagnosticId = "SC204";
-    private const string Title = "Do not use await Task.Delay() in unit tests";
-    private const string MessageFormat = "Unit test method '{0}' should not use await Task.Delay(). Use deterministic timing patterns instead.";
-    private const string Description = "Unit tests should not use await Task.Delay() as it introduces non-deterministic timing and slows down tests. Use test doubles or deterministic timing patterns instead.";
-    private const string Category = nameof(AnalyzerCategory.Testing);
 
-    private static readonly DiagnosticDescriptor Rule = new(
+    private static readonly DiagnosticDescriptor RuleDescriptor = new(
         DiagnosticId,
-        Title,
-        MessageFormat,
-        Category,
+        "Do not use await Task.Delay() in unit tests",
+        "Unit test method '{0}' should not use await Task.Delay(). Use deterministic timing patterns instead.",
+        "Testing",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: Description);
+        description: "Unit tests should not use await Task.Delay() as it introduces non-deterministic timing and slows down tests. Use test doubles or deterministic timing patterns instead.");
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+    protected override DiagnosticDescriptor Rule => RuleDescriptor;
 
-    public override void Initialize(AnalysisContext context)
-    {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.AwaitExpression);
-    }
+    protected override SyntaxKind[] SyntaxKindsToAnalyze => [SyntaxKind.AwaitExpression];
 
-    private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+    protected override void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         var awaitExpression = (AwaitExpressionSyntax)context.Node;
 

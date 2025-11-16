@@ -21,6 +21,7 @@ SC041 | Naming | Error | WeaselWordNameAnalyzer - prohibits type names ending wi
 
 SC101 | Style | Error | UsingBlockAtEndAnalyzer - prohibits using blocks as the last statement in a method; require using statement expressions instead
 SC121 | Style | Error | GuardClauseAnalyzer - prohibits manual parameter validation instead of Ardalis.GuardClauses
+SC122 | Style | Error | GuardClauseMessageAnalyzer - prohibits Guard.Against calls using nameof instead of descriptive messages
 SC141 | Style | Error | NoInlineCommentsAnalyzer - prohibits inline comments (// or /**/)
 
 SC201 | Testing | Warning | NoXUnitAssertionsAnalyzer - prohibits xUnit Assert methods instead of FluentAssertions

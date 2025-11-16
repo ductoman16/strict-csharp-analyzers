@@ -2,40 +2,30 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace StrictCSharp.Analyzers.Testing.Organization;
 
 // TODO: Update for 2-segment names.
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class TestMethodNamingAnalyzer : DiagnosticAnalyzer
+public class TestMethodNamingAnalyzer : BaseAnalyzer
 {
     public const string DiagnosticId = "SC242";
-    private const string Title = "Test method name must follow 3-segment structure";
-    private const string MessageFormat = "Test method '{0}' must follow the naming pattern 'MethodName_Scenario_ExpectedResult' with exactly 3 segments separated by underscores";
-    private const string Description = "Test method names should have exactly 3 segments separated by underscores: MethodName_Scenario_ExpectedResult. This ensures consistent and readable test naming across the codebase.";
-    private const string Category = nameof(AnalyzerCategory.Testing);
 
-    private static readonly DiagnosticDescriptor Rule = new(
+    private static readonly DiagnosticDescriptor RuleDescriptor = new(
         DiagnosticId,
-        Title,
-        MessageFormat,
-        Category,
+        "Test method name must follow 3-segment structure",
+        "Test method '{0}' must follow the naming pattern 'MethodName_Scenario_ExpectedResult' with exactly 3 segments separated by underscores",
+        "Testing",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: Description);
+        description: "Test method names should have exactly 3 segments separated by underscores: MethodName_Scenario_ExpectedResult. This ensures consistent and readable test naming across the codebase.");
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+    protected override DiagnosticDescriptor Rule => RuleDescriptor;
 
-    public override void Initialize(AnalysisContext context)
-    {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.MethodDeclaration);
-    }
+    protected override SyntaxKind[] SyntaxKindsToAnalyze => [SyntaxKind.MethodDeclaration];
 
-    private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+    protected override void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         var methodDeclaration = (MethodDeclarationSyntax)context.Node;
 

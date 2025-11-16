@@ -3,7 +3,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace StrictCSharp.Analyzers.Testing.Structure;
@@ -12,33 +11,24 @@ namespace StrictCSharp.Analyzers.Testing.Structure;
 /// Analyzer that verifies test methods with multiple assertions use AssertionScope.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class FluentAssertionScopeAnalyzer : DiagnosticAnalyzer
+public class FluentAssertionScopeAnalyzer : BaseAnalyzer
 {
     public const string DiagnosticId = "SC222";
-    private const string _title = "Test method with multiple assertions should use AssertionScope";
-    private const string _messageFormat = "Test method '{0}' {1}";
-    private const string _description = "Test methods with multiple assertions should use AssertionScope to get better error messages that show all failures.";
-    private const string _category = nameof(AnalyzerCategory.Testing);
 
-    private static readonly DiagnosticDescriptor _rule = new(
+    private static readonly DiagnosticDescriptor RuleDescriptor = new(
         DiagnosticId,
-        _title,
-        _messageFormat,
-        _category,
+        "Test method with multiple assertions should use AssertionScope",
+        "Test method '{0}' {1}",
+        "Testing",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: _description);
+        description: "Test methods with multiple assertions should use AssertionScope to get better error messages that show all failures.");
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
+    protected override DiagnosticDescriptor Rule => RuleDescriptor;
 
-    public override void Initialize(AnalysisContext context)
-    {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.MethodDeclaration);
-    }
+    protected override SyntaxKind[] SyntaxKindsToAnalyze => [SyntaxKind.MethodDeclaration];
 
-    private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+    protected override void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         var methodDeclaration = (MethodDeclarationSyntax)context.Node;
 
@@ -97,7 +87,7 @@ public class FluentAssertionScopeAnalyzer : DiagnosticAnalyzer
 
     private void ReportDiagnostic(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax method, string message)
     {
-        var diagnostic = Diagnostic.Create(_rule, method.Identifier.GetLocation(), method.Identifier.Text, message);
+        var diagnostic = Diagnostic.Create(Rule, method.Identifier.GetLocation(), method.Identifier.Text, message);
         context.ReportDiagnostic(diagnostic);
     }
 }

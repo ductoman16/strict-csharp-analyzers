@@ -54,6 +54,7 @@ jobs:
         name: nuget-packages
         path: ./artifacts/*.nupkg
 
+  # Nuget packages are published when a github release is published.
   publish-nuget:
     needs: build-and-test
     runs-on: ubuntu-latest

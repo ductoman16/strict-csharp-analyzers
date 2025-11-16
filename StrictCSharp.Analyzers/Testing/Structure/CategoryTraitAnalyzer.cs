@@ -2,39 +2,29 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace StrictCSharp.Analyzers.Testing.Structure;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class CategoryTraitAnalyzer : DiagnosticAnalyzer
+public class CategoryTraitAnalyzer : BaseAnalyzer
 {
     public const string DiagnosticId = "SC223";
-    private const string _title = "Test class must have a Category Trait";
-    private const string _messageFormat = "Test class '{0}' must have a [Trait(\"Category\", ...)] attribute";
-    private const string _description = "Each test class must be decorated with a [Trait(\"Category\", ...)] attribute for test categorization.";
-    private const string _category = nameof(AnalyzerCategory.Testing);
 
-    private static readonly DiagnosticDescriptor _rule = new(
+    private static readonly DiagnosticDescriptor RuleDescriptor = new(
         DiagnosticId,
-        _title,
-        _messageFormat,
-        _category,
+        "Test class must have a Category Trait",
+        "Test class '{0}' must have a [Trait(\"Category\", ...)] attribute",
+        "Testing",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: _description);
+        description: "Each test class must be decorated with a [Trait(\"Category\", ...)] attribute for test categorization.");
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
+    protected override DiagnosticDescriptor Rule => RuleDescriptor;
 
-    public override void Initialize(AnalysisContext context)
-    {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
-    }
+    protected override SyntaxKind[] SyntaxKindsToAnalyze => [SyntaxKind.ClassDeclaration];
 
-    private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
+    protected override void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         var classDeclaration = (ClassDeclarationSyntax)context.Node;
 
@@ -47,7 +37,7 @@ public class CategoryTraitAnalyzer : DiagnosticAnalyzer
         // Check for [Trait("Category", ...)] attribute
         if (!HasCategoryTrait(classDeclaration, context.SemanticModel))
         {
-            var diagnostic = Diagnostic.Create(_rule, classDeclaration.Identifier.GetLocation(), classDeclaration.Identifier.Text);
+            var diagnostic = Diagnostic.Create(Rule, classDeclaration.Identifier.GetLocation(), classDeclaration.Identifier.Text);
             context.ReportDiagnostic(diagnostic);
         }
     }

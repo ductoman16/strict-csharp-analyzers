@@ -3,39 +3,29 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace StrictCSharp.Analyzers.Testing.Structure;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class ArrangeActAssertAnalyzer : DiagnosticAnalyzer
+public class ArrangeActAssertAnalyzer : BaseAnalyzer
 {
     public const string DiagnosticId = "SC221";
-    private const string Title = "Test method must follow Arrange/Act/Assert pattern";
-    private const string MessageFormat = "Test method '{0}' {1}";
-    private const string Description = "Test methods should have clear Arrange, Act, and Assert sections separated by comments. Each section should be preceded by a '// Arrange', '// Act', or '// Assert' comment.";
-    private const string Category = nameof(AnalyzerCategory.Testing);
 
-    private static readonly DiagnosticDescriptor Rule = new(
+    private static readonly DiagnosticDescriptor RuleDescriptor = new(
         DiagnosticId,
-        Title,
-        MessageFormat,
-        Category,
+        "Test method must follow Arrange/Act/Assert pattern",
+        "Test method '{0}' {1}",
+        "Testing",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: Description);
+        description: "Test methods should have clear Arrange, Act, and Assert sections separated by comments. Each section should be preceded by a '// Arrange', '// Act', or '// Assert' comment.");
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+    protected override DiagnosticDescriptor Rule => RuleDescriptor;
 
-    public override void Initialize(AnalysisContext context)
-    {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.MethodDeclaration);
-    }
+    protected override SyntaxKind[] SyntaxKindsToAnalyze => [SyntaxKind.MethodDeclaration];
 
-    private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+    protected override void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         var methodDeclaration = (MethodDeclarationSyntax)context.Node;
 

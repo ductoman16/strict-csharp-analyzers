@@ -2,39 +2,29 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace StrictCSharp.Analyzers.Testing.Organization;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class TestClassNamespaceAnalyzer : DiagnosticAnalyzer
+public class TestClassNamespaceAnalyzer : BaseAnalyzer
 {
     public const string DiagnosticId = "SC244";
-    private const string _title = "Test class with TestOf attribute must follow correct namespace structure";
-    private const string _messageFormat = "Test class '{0}' should be in namespace '{1}' but is in '{2}'";
-    private const string _description = "Test classes with TestOf attribute must follow the namespace structure: [ClassUnderTestProjectName].Tests.[ClassUnderTestNamespace].[ClassUnderTest]Tests.";
-    private const string _category = nameof(AnalyzerCategory.Testing);
 
-    private static readonly DiagnosticDescriptor _rule = new(
+    private static readonly DiagnosticDescriptor RuleDescriptor = new(
         DiagnosticId,
-        _title,
-        _messageFormat,
-        _category,
+        "Test class with TestOf attribute must follow correct namespace structure",
+        "Test class '{0}' should be in namespace '{1}' but is in '{2}'",
+        "Testing",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: _description);
+        description: "Test classes with TestOf attribute must follow the namespace structure: [ClassUnderTestProjectName].Tests.[ClassUnderTestNamespace].[ClassUnderTest]Tests.");
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
+    protected override DiagnosticDescriptor Rule => RuleDescriptor;
 
-    public override void Initialize(AnalysisContext context)
-    {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
-    }
+    protected override SyntaxKind[] SyntaxKindsToAnalyze => [SyntaxKind.ClassDeclaration];
 
-    private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+    protected override void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         var classDeclaration = (ClassDeclarationSyntax)context.Node;
 
@@ -65,10 +55,10 @@ public class TestClassNamespaceAnalyzer : DiagnosticAnalyzer
         // Check if current namespace matches expected
         if (currentNamespace != expectedNamespace)
         {
-            var diagnostic = Diagnostic.Create(_rule, 
-                classDeclaration.Identifier.GetLocation(), 
-                classDeclaration.Identifier.Text, 
-                expectedNamespace, 
+            var diagnostic = Diagnostic.Create(Rule,
+                classDeclaration.Identifier.GetLocation(),
+                classDeclaration.Identifier.Text,
+                expectedNamespace,
                 currentNamespace);
             context.ReportDiagnostic(diagnostic);
         }

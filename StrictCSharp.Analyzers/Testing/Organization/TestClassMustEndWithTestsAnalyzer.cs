@@ -8,33 +8,24 @@ using System.Linq;
 namespace StrictCSharp.Analyzers.Testing.Organization;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class TestClassMustEndWithTestsAnalyzer : DiagnosticAnalyzer
+public class TestClassMustEndWithTestsAnalyzer : BaseAnalyzer
 {
     public const string DiagnosticId = "SC241";
-    private const string _title = "Test class must end with 'Tests'";
-    private const string _messageFormat = "Test class '{0}' {1}";
-    private const string _description = "Test classes should follow naming conventions (ending with 'Tests').";
-    private const string _category = nameof(AnalyzerCategory.Testing);
 
-    private static readonly DiagnosticDescriptor _rule = new(
+    private static readonly DiagnosticDescriptor RuleDescriptor = new(
         DiagnosticId,
-        _title,
-        _messageFormat,
-        _category,
+        "Test class must end with 'Tests'",
+        "Test class '{0}' {1}",
+        "Testing",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: _description);
+        description: "Test classes should follow naming conventions (ending with 'Tests').");
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
+    protected override DiagnosticDescriptor Rule => RuleDescriptor;
 
-    public override void Initialize(AnalysisContext context)
-    {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
-    }
+    protected override SyntaxKind[] SyntaxKindsToAnalyze => [SyntaxKind.ClassDeclaration];
 
-    private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+    protected override void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         var classDeclaration = (ClassDeclarationSyntax)context.Node;
 
@@ -108,7 +99,7 @@ public class TestClassMustEndWithTestsAnalyzer : DiagnosticAnalyzer
             _ => message
         };
 
-        var diagnostic = Diagnostic.Create(_rule, classDeclaration.Identifier.GetLocation(),
+        var diagnostic = Diagnostic.Create(Rule, classDeclaration.Identifier.GetLocation(),
             classDeclaration.Identifier.Text, extendedMessage);
         context.ReportDiagnostic(diagnostic);
     }

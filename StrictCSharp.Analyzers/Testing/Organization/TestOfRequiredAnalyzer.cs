@@ -2,39 +2,29 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace StrictCSharp.Analyzers.Testing.Organization;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class TestOfRequiredAnalyzer : DiagnosticAnalyzer
+public class TestOfRequiredAnalyzer : BaseAnalyzer
 {
     public const string DiagnosticId = "SC243";
-    private const string Title = "Test class must have TestOf attribute";
-    private const string MessageFormat = "Test class '{0}' must have a [TestOf(typeof(ClassUnderTest))] attribute";
-    private const string Description = "All test classes (classes containing XUnit Facts or Theories) must have a TestOf attribute to indicate which class they are testing.";
-    private const string Category = nameof(AnalyzerCategory.Testing);
 
-    private static readonly DiagnosticDescriptor Rule = new(
+    private static readonly DiagnosticDescriptor RuleDescriptor = new(
         DiagnosticId,
-        Title,
-        MessageFormat,
-        Category,
+        "Test class must have TestOf attribute",
+        "Test class '{0}' must have a [TestOf(typeof(ClassUnderTest))] attribute",
+        "Testing",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: Description);
+        description: "All test classes (classes containing XUnit Facts or Theories) must have a TestOf attribute to indicate which class they are testing.");
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+    protected override DiagnosticDescriptor Rule => RuleDescriptor;
 
-    public override void Initialize(AnalysisContext context)
-    {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
-    }
+    protected override SyntaxKind[] SyntaxKindsToAnalyze => [SyntaxKind.ClassDeclaration];
 
-    private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+    protected override void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         var classDeclaration = (ClassDeclarationSyntax)context.Node;
 
@@ -47,8 +37,8 @@ public class TestOfRequiredAnalyzer : DiagnosticAnalyzer
         // Check if it has a TestOf attribute
         if (!HasTestOfAttribute(classDeclaration, context.SemanticModel))
         {
-            var diagnostic = Diagnostic.Create(Rule, 
-                classDeclaration.Identifier.GetLocation(), 
+            var diagnostic = Diagnostic.Create(Rule,
+                classDeclaration.Identifier.GetLocation(),
                 classDeclaration.Identifier.Text);
             context.ReportDiagnostic(diagnostic);
         }

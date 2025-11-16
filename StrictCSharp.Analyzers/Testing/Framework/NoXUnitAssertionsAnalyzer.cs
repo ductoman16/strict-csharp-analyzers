@@ -3,7 +3,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace StrictCSharp.Analyzers.Testing.Framework;
@@ -12,33 +11,24 @@ namespace StrictCSharp.Analyzers.Testing.Framework;
 /// Analyzer that detects use of xUnit Assert methods instead of FluentAssertions.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class NoXUnitAssertionsAnalyzer : DiagnosticAnalyzer
+public class NoXUnitAssertionsAnalyzer : BaseAnalyzer
 {
     public const string DiagnosticId = "SC201";
-    private const string _title = "Use FluentAssertions instead of xUnit assertions";
-    private const string _messageFormat = "Test method '{0}' {1}";
-    private const string _description = "Test methods should use FluentAssertions syntax instead of xUnit Assert methods for more readable and detailed assertions.";
-    private const string _category = nameof(AnalyzerCategory.Testing);
 
-    private static readonly DiagnosticDescriptor _rule = new(
+    private static readonly DiagnosticDescriptor RuleDescriptor = new(
         DiagnosticId,
-        _title,
-        _messageFormat,
-        _category,
+        "Use FluentAssertions instead of xUnit assertions",
+        "Test method '{0}' {1}",
+        "Testing",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: _description);
+        description: "Test methods should use FluentAssertions syntax instead of xUnit Assert methods for more readable and detailed assertions.");
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
+    protected override DiagnosticDescriptor Rule => RuleDescriptor;
 
-    public override void Initialize(AnalysisContext context)
-    {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.MethodDeclaration);
-    }
+    protected override SyntaxKind[] SyntaxKindsToAnalyze => [SyntaxKind.MethodDeclaration];
 
-    private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+    protected override void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         var methodDeclaration = (MethodDeclarationSyntax)context.Node;
 
@@ -88,7 +78,7 @@ public class NoXUnitAssertionsAnalyzer : DiagnosticAnalyzer
 
     private void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxNode node, string methodName, string message)
     {
-        var diagnostic = Diagnostic.Create(_rule, node.GetLocation(), methodName, message);
+        var diagnostic = Diagnostic.Create(Rule, node.GetLocation(), methodName, message);
         context.ReportDiagnostic(diagnostic);
     }
 }

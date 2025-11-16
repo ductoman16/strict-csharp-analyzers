@@ -2,40 +2,32 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 
 namespace StrictCSharp.Analyzers.Style.MethodStyle;
 
+/// <summary>
+/// Analyzer that detects manual parameter validation that should use Ardalis.GuardClauses.
+/// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class GuardClauseAnalyzer : DiagnosticAnalyzer
+public class ManualParameterValidationAnalyzer : BaseAnalyzer
 {
     public const string DiagnosticId = "SC121";
-    private const string _title = "Use Ardalis.GuardClauses for parameter validation";
-    private const string _messageFormat = "Use Guard.Against.{0} instead of manual validation";
-    private const string _description = "Use Ardalis.GuardClauses for parameter validation at the start of methods to improve code readability and maintainability.";
-    private const string _category = nameof(AnalyzerCategory.Style);
 
-    private static readonly DiagnosticDescriptor _rule = new(
+    private static readonly DiagnosticDescriptor RuleDescriptor = new(
         DiagnosticId,
-        _title,
-        _messageFormat,
-        _category,
+        "Use Ardalis.GuardClauses for parameter validation",
+        "Use Guard.Against.{0} instead of manual validation",
+        "Style",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: _description);
+        description: "Use Ardalis.GuardClauses for parameter validation at the start of methods to improve code readability and maintainability.");
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
+    protected override DiagnosticDescriptor Rule => RuleDescriptor;
 
-    public override void Initialize(AnalysisContext context)
-    {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.EnableConcurrentExecution();
+    protected override SyntaxKind[] SyntaxKindsToAnalyze =>
+        [SyntaxKind.IfStatement, SyntaxKind.ThrowExpression];
 
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.IfStatement, SyntaxKind.ThrowExpression);
-        context.RegisterSyntaxNodeAction(AnalyzeGuardClause, SyntaxKind.InvocationExpression);
-    }
-
-    private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+    protected override void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         if (context.Node is IfStatementSyntax ifStatement)
         {
@@ -43,7 +35,7 @@ public class GuardClauseAnalyzer : DiagnosticAnalyzer
             if (IsNullCheck(ifStatement.Condition) && HasArgumentException(ifStatement.Statement))
             {
                 context.ReportDiagnostic(
-                    Diagnostic.Create(_rule, ifStatement.GetLocation(), "Null"));
+                    Diagnostic.Create(Rule, ifStatement.GetLocation(), "Null"));
                 return;
             }
 
@@ -51,7 +43,7 @@ public class GuardClauseAnalyzer : DiagnosticAnalyzer
             if (IsEmptyCheck(ifStatement.Condition, context.SemanticModel) && HasArgumentException(ifStatement.Statement))
             {
                 context.ReportDiagnostic(
-                    Diagnostic.Create(_rule, ifStatement.GetLocation(), "NullOrEmpty"));
+                    Diagnostic.Create(Rule, ifStatement.GetLocation(), "NullOrEmpty"));
                 return;
             }
 
@@ -59,7 +51,7 @@ public class GuardClauseAnalyzer : DiagnosticAnalyzer
             if (IsOutOfRangeCheck(ifStatement.Condition) && HasArgumentException(ifStatement.Statement))
             {
                 context.ReportDiagnostic(
-                    Diagnostic.Create(_rule, ifStatement.GetLocation(), "OutOfRange"));
+                    Diagnostic.Create(Rule, ifStatement.GetLocation(), "OutOfRange"));
                 return;
             }
 
@@ -67,7 +59,7 @@ public class GuardClauseAnalyzer : DiagnosticAnalyzer
             if (IsDefaultValueCheck(ifStatement.Condition) && HasArgumentException(ifStatement.Statement))
             {
                 context.ReportDiagnostic(
-                    Diagnostic.Create(_rule, ifStatement.GetLocation(), "Default"));
+                    Diagnostic.Create(Rule, ifStatement.GetLocation(), "Default"));
             }
         }
         else if (context.Node is ThrowExpressionSyntax throwExpression)
@@ -78,20 +70,7 @@ public class GuardClauseAnalyzer : DiagnosticAnalyzer
                 IsArgumentException(throwExpression.Expression))
             {
                 context.ReportDiagnostic(
-                    Diagnostic.Create(_rule, throwExpression.GetLocation(), "Null"));
-            }
-        }
-    }
-
-    private void AnalyzeGuardClause(SyntaxNodeAnalysisContext context)
-    {
-        if (context.Node is InvocationExpressionSyntax invocation)
-        {
-            // Check for Guard.Against.X(x, nameof(x))
-            if (IsGuardAgainstCall(invocation) && HasNameofArgument(invocation))
-            {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(_rule, invocation.GetLocation(), "with descriptive message"));
+                    Diagnostic.Create(Rule, throwExpression.GetLocation(), "Null"));
             }
         }
     }
@@ -188,20 +167,5 @@ public class GuardClauseAnalyzer : DiagnosticAnalyzer
         }
         return false;
     }
-
-    private static bool IsGuardAgainstCall(InvocationExpressionSyntax invocation)
-    {
-        if (invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
-            memberAccess.Expression is MemberAccessExpressionSyntax guardAgainst)
-        {
-            return guardAgainst.Expression.ToString() == "Guard" &&
-                   guardAgainst.Name.ToString() == "Against";
-        }
-        return false;
-    }
-
-    private static bool HasNameofArgument(InvocationExpressionSyntax invocation) =>
-        invocation.ArgumentList.Arguments.Count >= 2 &&
-        invocation.ArgumentList.Arguments[1].Expression is InvocationExpressionSyntax nameofInvocation &&
-        nameofInvocation.Expression.ToString() == "nameof";
 }
+

@@ -2,7 +2,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 
 namespace StrictCSharp.Analyzers.Style.UsingStatements;
 
@@ -10,33 +9,24 @@ namespace StrictCSharp.Analyzers.Style.UsingStatements;
 /// Analyzer that enforces using statement expressions instead of using blocks at the end of methods.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class UsingBlockAtEndAnalyzer : DiagnosticAnalyzer
+public class UsingBlockAtEndAnalyzer : BaseAnalyzer
 {
     public const string DiagnosticId = "SC101";
-    private const string Title = "Use using statement expression instead of using block at end of method";
-    private const string MessageFormat = "Use a using statement expression instead of a using block as the last statement in a method";
-    private const string Description = "Prefer using statement expressions (using var x = ...) over using blocks (using (var x = ...) { ... }) when the using is the last statement in a method.";
-    private const string Category = nameof(AnalyzerCategory.Style);
 
-    private static readonly DiagnosticDescriptor Rule = new(
+    private static readonly DiagnosticDescriptor RuleDescriptor = new(
         DiagnosticId,
-        Title,
-        MessageFormat,
-        Category,
+        "Use using statement expression instead of using block at end of method",
+        "Use a using statement expression instead of a using block as the last statement in a method",
+        "Style",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: Description);
+        description: "Prefer using statement expressions (using var x = ...) over using blocks (using (var x = ...) { ... }) when the using is the last statement in a method.");
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+    protected override DiagnosticDescriptor Rule => RuleDescriptor;
 
-    public override void Initialize(AnalysisContext context)
-    {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.MethodDeclaration);
-    }
+    protected override SyntaxKind[] SyntaxKindsToAnalyze => [SyntaxKind.MethodDeclaration];
 
-    private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+    protected override void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         var methodDeclaration = (MethodDeclarationSyntax)context.Node;
         var body = methodDeclaration.Body;

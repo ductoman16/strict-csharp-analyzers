@@ -8,10 +8,10 @@ using StrictCSharp.Analyzers.Style.MethodStyle;
 namespace StrictCSharp.Analyzers.Tests.Style.MethodStyle;
 
 /// <summary>
-/// Tests for the <see cref="GuardClauseAnalyzer"/> to ensure it correctly identifies
+/// Tests for the <see cref="ManualParameterValidationAnalyzer"/> to ensure it correctly identifies
 /// manual parameter validation that should use Ardalis.GuardClauses.
 /// </summary>
-public class GuardClauseAnalyzerTests
+public class ManualParameterValidationAnalyzerTests
 {
     /// <summary>
     /// Verifies that the analyzer can be instantiated and has the correct diagnostic configuration.
@@ -20,7 +20,7 @@ public class GuardClauseAnalyzerTests
     public void Analyzer_WhenCalled_ShouldCanBeInstantiated()
     {
         // Arrange & Act
-        var analyzer = new GuardClauseAnalyzer();
+        var analyzer = new ManualParameterValidationAnalyzer();
 
         // Assert
         analyzer.Should().NotBeNull();
@@ -36,7 +36,7 @@ public class GuardClauseAnalyzerTests
     public void Analyzer_WhenCalled_ShouldHasCorrectDiagnosticProperties()
     {
         // Arrange
-        var analyzer = new GuardClauseAnalyzer();
+        var analyzer = new ManualParameterValidationAnalyzer();
         var diagnostic = analyzer.SupportedDiagnostics[0];
 
         // Assert
@@ -65,73 +65,8 @@ public class TestClass
 
         var diagnostics = GetDiagnostics(test);
         diagnostics.Should().HaveCount(1);
-        diagnostics[0].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
+        diagnostics[0].Id.Should().Be(ManualParameterValidationAnalyzer.DiagnosticId);
         diagnostics[0].GetMessage().Should().Contain("Guard.Against.Null");
-    }
-
-    /// <summary>
-    /// Verifies that Guard.Against call with nameof triggers a diagnostic for descriptive message.
-    /// </summary>
-    [Fact]
-    public void GuardAgainstCallWithNameof_WhenCalled_ShouldReportDiagnostic()
-    {
-        var test = @"
-using Ardalis.GuardClauses;
-
-public class TestClass
-{
-    public void TestMethod(string parameter)
-    {
-        Guard.Against.Null(parameter, nameof(parameter));
-    }
-}";
-
-        var diagnostics = GetDiagnostics(test);
-        diagnostics.Should().HaveCount(1);
-        diagnostics[0].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
-        diagnostics[0].GetMessage().Should().Contain("with descriptive message");
-    }
-
-    /// <summary>
-    /// Verifies that proper Guard.Against usage with descriptive message does not trigger a diagnostic.
-    /// </summary>
-    [Fact]
-    public void ProperGuardAgainstUsageWithMessage_WhenCalled_ShouldNotReportDiagnostic()
-    {
-        var test = @"
-using Ardalis.GuardClauses;
-
-public class TestClass
-{
-    public void TestMethod(string parameter)
-    {
-        Guard.Against.Null(parameter, ""Parameter cannot be null"");
-    }
-}";
-
-        var diagnostics = GetDiagnostics(test);
-        diagnostics.Should().BeEmpty();
-    }
-
-    /// <summary>
-    /// Verifies that Guard.Against calls without nameof do not trigger the descriptive message diagnostic.
-    /// </summary>
-    [Fact]
-    public void GuardAgainstCallsWithoutNameof_WhenCalled_ShouldNotReportDiagnostic()
-    {
-        var test = @"
-using Ardalis.GuardClauses;
-
-public class TestClass
-{
-    public void TestMethod(string parameter)
-    {
-        Guard.Against.Null(parameter);
-    }
-}";
-
-        var diagnostics = GetDiagnostics(test);
-        diagnostics.Should().BeEmpty();
     }
 
     /// <summary>
@@ -200,77 +135,8 @@ public class TestClass
 
         var diagnostics = GetDiagnostics(test);
         diagnostics.Should().HaveCount(1);
-        diagnostics[0].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
+        diagnostics[0].Id.Should().Be(ManualParameterValidationAnalyzer.DiagnosticId);
         diagnostics[0].GetMessage().Should().Contain("Guard.Against.Null");
-    }
-
-    /// <summary>
-    /// Verifies that if statement with null check using 'is null' pattern does not trigger a diagnostic (not currently supported by analyzer).
-    /// </summary>
-    [Fact]
-    public void IfStatementWithIsNullPatternAndThrow_WhenCalled_ShouldNotReportDiagnostic()
-    {
-        var test = @"
-using System;
-
-public class TestClass
-{
-    public void TestMethod(object parameter)
-    {
-        if (parameter is null)
-            throw new ArgumentNullException(nameof(parameter));
-    }
-}";
-
-        var diagnostics = GetDiagnostics(test);
-        // Note: The analyzer currently only supports == null, not 'is null' pattern
-        diagnostics.Should().BeEmpty();
-    }
-
-    /// <summary>
-    /// Verifies that if statement with string.IsNullOrEmpty check does not trigger a diagnostic (analyzer expects binary expression).
-    /// </summary>
-    [Fact]
-    public void IfStatementWithIsNullOrEmptyCheckAndThrow_WhenCalled_ShouldNotReportDiagnostic()
-    {
-        var test = @"
-using System;
-
-public class TestClass
-{
-    public void TestMethod(string parameter)
-    {
-        if (string.IsNullOrEmpty(parameter))
-            throw new ArgumentException(""Parameter cannot be empty"", nameof(parameter));
-    }
-}";
-
-        var diagnostics = GetDiagnostics(test);
-        // Note: The analyzer currently expects string.IsNullOrEmpty() as part of a binary expression
-        diagnostics.Should().BeEmpty();
-    }
-
-    /// <summary>
-    /// Verifies that if statement with string.IsNullOrWhiteSpace check does not trigger a diagnostic (analyzer expects binary expression).
-    /// </summary>
-    [Fact]
-    public void IfStatementWithIsNullOrWhiteSpaceCheckAndThrow_WhenCalled_ShouldNotReportDiagnostic()
-    {
-        var test = @"
-using System;
-
-public class TestClass
-{
-    public void TestMethod(string parameter)
-    {
-        if (string.IsNullOrWhiteSpace(parameter))
-            throw new ArgumentException(""Parameter cannot be whitespace"", nameof(parameter));
-    }
-}";
-
-        var diagnostics = GetDiagnostics(test);
-        // Note: The analyzer currently expects string.IsNullOrWhiteSpace() as part of a binary expression
-        diagnostics.Should().BeEmpty();
     }
 
     /// <summary>
@@ -293,7 +159,7 @@ public class TestClass
 
         var diagnostics = GetDiagnostics(test);
         diagnostics.Should().HaveCount(1);
-        diagnostics[0].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
+        diagnostics[0].Id.Should().Be(ManualParameterValidationAnalyzer.DiagnosticId);
         diagnostics[0].GetMessage().Should().Contain("Guard.Against.NullOrEmpty");
     }
 
@@ -318,31 +184,7 @@ public class TestClass
 
         var diagnostics = GetDiagnostics(test);
         diagnostics.Should().HaveCount(1);
-        diagnostics[0].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
-        diagnostics[0].GetMessage().Should().Contain("Guard.Against.NullOrEmpty");
-    }
-
-    /// <summary>
-    /// Verifies that if statement with array Length check and ArgumentException triggers a diagnostic.
-    /// </summary>
-    [Fact]
-    public void IfStatementWithArrayLengthCheckAndThrow_WhenCalled_ShouldReportDiagnostic()
-    {
-        var test = @"
-using System;
-
-public class TestClass
-{
-    public void TestMethod(int[] items)
-    {
-        if (items.Length == 0)
-            throw new ArgumentException(""Array cannot be empty"", nameof(items));
-    }
-}";
-
-        var diagnostics = GetDiagnostics(test);
-        diagnostics.Should().HaveCount(1);
-        diagnostics[0].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
+        diagnostics[0].Id.Should().Be(ManualParameterValidationAnalyzer.DiagnosticId);
         diagnostics[0].GetMessage().Should().Contain("Guard.Against.NullOrEmpty");
     }
 
@@ -366,79 +208,7 @@ public class TestClass
 
         var diagnostics = GetDiagnostics(test);
         diagnostics.Should().HaveCount(1);
-        diagnostics[0].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
-        diagnostics[0].GetMessage().Should().Contain("Guard.Against.OutOfRange");
-    }
-
-    /// <summary>
-    /// Verifies that if statement with greater than range check and ArgumentOutOfRangeException triggers a diagnostic.
-    /// </summary>
-    [Fact]
-    public void IfStatementWithGreaterThanRangeCheckAndThrow_WhenCalled_ShouldReportDiagnostic()
-    {
-        var test = @"
-using System;
-
-public class TestClass
-{
-    public void TestMethod(int value)
-    {
-        if (value > 100)
-            throw new ArgumentOutOfRangeException(nameof(value), ""Value must not exceed 100"");
-    }
-}";
-
-        var diagnostics = GetDiagnostics(test);
-        diagnostics.Should().HaveCount(1);
-        diagnostics[0].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
-        diagnostics[0].GetMessage().Should().Contain("Guard.Against.OutOfRange");
-    }
-
-    /// <summary>
-    /// Verifies that if statement with less than or equal range check and ArgumentOutOfRangeException triggers a diagnostic.
-    /// </summary>
-    [Fact]
-    public void IfStatementWithLessThanOrEqualRangeCheckAndThrow_WhenCalled_ShouldReportDiagnostic()
-    {
-        var test = @"
-using System;
-
-public class TestClass
-{
-    public void TestMethod(int value)
-    {
-        if (value <= 0)
-            throw new ArgumentOutOfRangeException(nameof(value), ""Value must be positive"");
-    }
-}";
-
-        var diagnostics = GetDiagnostics(test);
-        diagnostics.Should().HaveCount(1);
-        diagnostics[0].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
-        diagnostics[0].GetMessage().Should().Contain("Guard.Against.OutOfRange");
-    }
-
-    /// <summary>
-    /// Verifies that if statement with greater than or equal range check and ArgumentOutOfRangeException triggers a diagnostic.
-    /// </summary>
-    [Fact]
-    public void IfStatementWithGreaterThanOrEqualRangeCheckAndThrow_WhenCalled_ShouldReportDiagnostic()
-    {
-        var test = @"
-using System;
-
-public class TestClass
-{
-    public void TestMethod(int value)
-    {
-        if (value >= 100)
-            throw new ArgumentOutOfRangeException(nameof(value), ""Value must be less than 100"");
-    }
-}";
-
-        var diagnostics = GetDiagnostics(test);
-        diagnostics.Should().HaveCount(1);
-        diagnostics[0].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
+        diagnostics[0].Id.Should().Be(ManualParameterValidationAnalyzer.DiagnosticId);
         diagnostics[0].GetMessage().Should().Contain("Guard.Against.OutOfRange");
     }
 
@@ -462,8 +232,126 @@ public class TestClass
 
         var diagnostics = GetDiagnostics(test);
         diagnostics.Should().HaveCount(1);
-        diagnostics[0].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
+        diagnostics[0].Id.Should().Be(ManualParameterValidationAnalyzer.DiagnosticId);
         diagnostics[0].GetMessage().Should().Contain("Guard.Against.Default");
+    }
+
+    /// <summary>
+    /// Verifies that if statement with is null pattern and throw does not trigger a diagnostic (not currently supported).
+    /// </summary>
+    [Fact]
+    public void IfStatementWithIsNullPatternAndThrow_WhenCalled_ShouldNotReportDiagnostic()
+    {
+        var test = @"
+using System;
+
+public class TestClass
+{
+    public void TestMethod(object parameter)
+    {
+        if (parameter is null)
+            throw new ArgumentNullException(nameof(parameter));
+    }
+}";
+
+        var diagnostics = GetDiagnostics(test);
+        diagnostics.Should().BeEmpty();
+    }
+
+    /// <summary>
+    /// Verifies that if statement with array Length check and ArgumentException triggers a diagnostic.
+    /// </summary>
+    [Fact]
+    public void IfStatementWithArrayLengthCheckAndThrow_WhenCalled_ShouldReportDiagnostic()
+    {
+        var test = @"
+using System;
+
+public class TestClass
+{
+    public void TestMethod(int[] items)
+    {
+        if (items.Length == 0)
+            throw new ArgumentException(""Array cannot be empty"", nameof(items));
+    }
+}";
+
+        var diagnostics = GetDiagnostics(test);
+        diagnostics.Should().HaveCount(1);
+        diagnostics[0].Id.Should().Be(ManualParameterValidationAnalyzer.DiagnosticId);
+        diagnostics[0].GetMessage().Should().Contain("Guard.Against.NullOrEmpty");
+    }
+
+    /// <summary>
+    /// Verifies that if statement with greater than range check and ArgumentOutOfRangeException triggers a diagnostic.
+    /// </summary>
+    [Fact]
+    public void IfStatementWithGreaterThanRangeCheckAndThrow_WhenCalled_ShouldReportDiagnostic()
+    {
+        var test = @"
+using System;
+
+public class TestClass
+{
+    public void TestMethod(int value)
+    {
+        if (value > 100)
+            throw new ArgumentOutOfRangeException(nameof(value), ""Value must not exceed 100"");
+    }
+}";
+
+        var diagnostics = GetDiagnostics(test);
+        diagnostics.Should().HaveCount(1);
+        diagnostics[0].Id.Should().Be(ManualParameterValidationAnalyzer.DiagnosticId);
+        diagnostics[0].GetMessage().Should().Contain("Guard.Against.OutOfRange");
+    }
+
+    /// <summary>
+    /// Verifies that if statement with less than or equal range check and ArgumentOutOfRangeException triggers a diagnostic.
+    /// </summary>
+    [Fact]
+    public void IfStatementWithLessThanOrEqualRangeCheckAndThrow_WhenCalled_ShouldReportDiagnostic()
+    {
+        var test = @"
+using System;
+
+public class TestClass
+{
+    public void TestMethod(int value)
+    {
+        if (value <= 0)
+            throw new ArgumentOutOfRangeException(nameof(value), ""Value must be positive"");
+    }
+}";
+
+        var diagnostics = GetDiagnostics(test);
+        diagnostics.Should().HaveCount(1);
+        diagnostics[0].Id.Should().Be(ManualParameterValidationAnalyzer.DiagnosticId);
+        diagnostics[0].GetMessage().Should().Contain("Guard.Against.OutOfRange");
+    }
+
+    /// <summary>
+    /// Verifies that if statement with greater than or equal range check and ArgumentOutOfRangeException triggers a diagnostic.
+    /// </summary>
+    [Fact]
+    public void IfStatementWithGreaterThanOrEqualRangeCheckAndThrow_WhenCalled_ShouldReportDiagnostic()
+    {
+        var test = @"
+using System;
+
+public class TestClass
+{
+    public void TestMethod(int value)
+    {
+        if (value >= 100)
+            throw new ArgumentOutOfRangeException(nameof(value), ""Value must be less than 100"");
+    }
+}";
+
+        var diagnostics = GetDiagnostics(test);
+        diagnostics.Should().HaveCount(1);
+        diagnostics[0].Id.Should().Be(ManualParameterValidationAnalyzer.DiagnosticId);
+        diagnostics[0].GetMessage().Should().Contain("Guard.Against.OutOfRange");
     }
 
     /// <summary>
@@ -486,7 +374,7 @@ public class TestClass
 
         var diagnostics = GetDiagnostics(test);
         diagnostics.Should().HaveCount(1);
-        diagnostics[0].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
+        diagnostics[0].Id.Should().Be(ManualParameterValidationAnalyzer.DiagnosticId);
         diagnostics[0].GetMessage().Should().Contain("Guard.Against.Default");
     }
 
@@ -511,7 +399,6 @@ public class TestClass
 }";
 
         var diagnostics = GetDiagnostics(test);
-        // Note: The analyzer currently only handles single statement throws, not block statements
         diagnostics.Should().BeEmpty();
     }
 
@@ -535,7 +422,7 @@ public class TestClass
 
         var diagnostics = GetDiagnostics(test);
         diagnostics.Should().HaveCount(1);
-        diagnostics[0].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
+        diagnostics[0].Id.Should().Be(ManualParameterValidationAnalyzer.DiagnosticId);
         diagnostics[0].GetMessage().Should().Contain("Guard.Against.Null");
     }
 
@@ -584,12 +471,12 @@ public class TestClass
 
         var diagnostics = GetDiagnostics(test);
         diagnostics.Should().HaveCount(2);
-        diagnostics[0].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
-        diagnostics[1].Id.Should().Be(GuardClauseAnalyzer.DiagnosticId);
+        diagnostics[0].Id.Should().Be(ManualParameterValidationAnalyzer.DiagnosticId);
+        diagnostics[1].Id.Should().Be(ManualParameterValidationAnalyzer.DiagnosticId);
     }
 
     /// <summary>
-    /// Helper method to get diagnostics from source code using the GuardClauseAnalyzer.
+    /// Helper method to get diagnostics from source code using the ManualParameterValidationAnalyzer.
     /// </summary>
     private static Diagnostic[] GetDiagnostics(string source)
     {
@@ -598,7 +485,7 @@ public class TestClass
             .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
             .AddSyntaxTrees(syntaxTree);
 
-        var analyzer = new GuardClauseAnalyzer();
+        var analyzer = new ManualParameterValidationAnalyzer();
         var diagnostics = compilation.WithAnalyzers(ImmutableArray.Create<DiagnosticAnalyzer>(analyzer))
             .GetAnalyzerDiagnosticsAsync()
             .Result;
@@ -606,3 +493,4 @@ public class TestClass
         return diagnostics.ToArray();
     }
 }
+
